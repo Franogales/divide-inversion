@@ -1,9 +1,8 @@
-package main
+package credito
 
 import (
 	"errors"
 	"fmt"
-	"log"
 )
 
 type CreditAssigner interface {
@@ -11,17 +10,13 @@ type CreditAssigner interface {
 }
 
 type CreditType struct {
-	Credit300 int32
-	Credit500 int32
-	Credit700 int32
+	Credit300 int32 `json:"credit_type_300"`
+	Credit500 int32 `json:"credit_type_500"`
+	Credit700 int32 `json:"credit_type_700"`
 }
 
-func main() {
-	credit := CreditType{}
-	_, _, _, err := credit.Assign(1000)
-	if err != nil {
-		log.Fatal("error: " + err.Error())
-	}
+func New() *CreditType {
+	return &CreditType{}
 }
 func (cr *CreditType) Assign(investment int32) (int32, int32, int32, error) {
 	const (

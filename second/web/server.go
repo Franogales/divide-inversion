@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/Franogales/divide-inversion/second/web/api"
 	"github.com/gin-gonic/gin"
 )
 
@@ -42,14 +43,7 @@ func ServerRun() {
 			panic("foo")
 		})
 
-		credit.POST("/", func(c *gin.Context) {
-			test := 0
-			for i := 0; i < 3; i++ {
-				test += i
-			}
-			c.String(http.StatusOK, "ohai")
-		})
+		credit.POST("/", api.Assign)
 	}
-
 	router.Run()
 }
