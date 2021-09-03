@@ -137,7 +137,7 @@ func TestCobranza(t *testing.T) {
 
 	for _, tt := range setTests {
 		t.Run(tt.Name, func(t *testing.T) {
-			credit := CresitType{}
+			credit := CreditType{}
 			a, b, c, err := credit.Assign(tt.Input)
 			if a != tt.Expected1 && b != tt.Expected2 && c != tt.Expected3 && err.Error() != tt.ExpectedErr {
 				t.Errorf("Failed %s : expected a=%d, b=%d, c=%d, error=%s. you got %d, %d, %d,%s", tt.Name, tt.Expected1, tt.Expected2, tt.Expected3, tt.ExpectedErr, a, b, c, err.Error())
