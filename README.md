@@ -12,7 +12,7 @@ El paquete second solo contiene una restAPI al agoritmo.
 El paquete second como comenté anteriormente contiene una api para la asignacion de inversiones.
 La posible ruta para ejecutar el programa es un POST Request  en formato json como el siguente
 
-"curl --location --request POST 'localhost:8080/credit-asigment' \
+"curl --location --request POST '52.27.42.57:8080/credit-asigment' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "Investment": 700
@@ -24,4 +24,4 @@ El paquete second esta hecho con gin por usar fasthttp que es mas rapido que el 
 
 ## Cómo usarlo
 Para poder ejecutar el paquete second debes de hacer lo siguiente. 
-- 1.- entrar dentro de second/cmd/ y ejecutar el comando "go run main.go"
+- 1.- entrar dentro de second/cmd/ y ejecutar el comando "./server" y se iniciara el servicio
