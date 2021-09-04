@@ -1,4 +1,4 @@
-package main
+package credito
 
 import (
 	"testing"
@@ -64,9 +64,9 @@ func TestCobranza(t *testing.T) {
 		{
 			Name:        "Igual que 700",
 			Input:       700,
-			Expected1:   0,
+			Expected1:   1,
 			Expected2:   0,
-			Expected3:   1,
+			Expected3:   0,
 			ExpectedErr: "",
 		},
 		{
@@ -133,11 +133,19 @@ func TestCobranza(t *testing.T) {
 			Expected3:   8,
 			ExpectedErr: "",
 		},
+		{
+			Name:        "Igual que 6750",
+			Input:       0,
+			Expected1:   0,
+			Expected2:   0,
+			Expected3:   0,
+			ExpectedErr: "does not meet minimum requirements",
+		},
 	}
 
 	for _, tt := range setTests {
 		t.Run(tt.Name, func(t *testing.T) {
-			credit := CreditType{}
+			credit := New()
 			a, b, c, err := credit.Assign(tt.Input)
 			if a != tt.Expected1 && b != tt.Expected2 && c != tt.Expected3 && err.Error() != tt.ExpectedErr {
 				t.Errorf("Failed %s : expected a=%d, b=%d, c=%d, error=%s. you got %d, %d, %d,%s", tt.Name, tt.Expected1, tt.Expected2, tt.Expected3, tt.ExpectedErr, a, b, c, err.Error())

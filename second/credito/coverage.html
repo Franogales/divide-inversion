@@ -1,0 +1,221 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>credito: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/Franogales/divide-inversion/second/credito/credito.go (100.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package credito
+
+import (
+        "errors"
+        "fmt"
+)
+
+type CreditAssigner interface {
+        Assign(investment int32) (int32, int32, int32, error)
+}
+
+type CreditType struct {
+        Credit300 int32 `json:"credit_type_300"`
+        Credit500 int32 `json:"credit_type_500"`
+        Credit700 int32 `json:"credit_type_700"`
+}
+
+func New() *CreditType <span class="cov8" title="1">{
+        return &amp;CreditType{}
+}</span>
+func (cr *CreditType) Assign(investment int32) (int32, int32, int32, error) <span class="cov8" title="1">{
+        const (
+                creditBase int32 = 100 /* solo usado para marcar la base de los creditos */
+                creditA    int32 = 300 /* El tipo de credito A es de 300 */
+                creditB    int32 = 500 /* El tipo de credito B es de 500 */
+                creditC    int32 = 700 /* El tipo de credito C es de 700 */
+        )
+        /* Validamos que se cumpla lo siguiente. Inversion sea divisible entre 100 sin residuo. Que la inversion sea al menos del primer tipo de credito(300)  */
+        if investment &lt; creditA || investment%creditBase != 0 </span><span class="cov8" title="1">{
+                cr.Credit300, cr.Credit500, cr.Credit700 = 0, 0, 0
+                return cr.Credit300, cr.Credit500, cr.Credit700, errors.New("does not meet minimum requirements")
+        }</span>
+        <span class="cov8" title="1">var residuo700, residuo500, residuo300 int32
+        /* first700 y first500 son solo un flag para identificar la primera iteracion por el tipo de credito */
+        first700, first500 := true, true
+        for </span><span class="cov8" title="1">{
+                if first700 </span><span class="cov8" title="1">{
+                        cr.Credit700 = investment / creditC
+                }</span>
+                /* si la inversion es mayor/igual que el tipo de credito de 700 y al menos se ha podido otorgar un credito de 700  */
+
+                <span class="cov8" title="1">if investment &gt;= creditC &amp;&amp; cr.Credit700 &gt; 0 </span><span class="cov8" title="1">{
+                        /* el residuo es igual a la diferencia entre la inversion menos la mutiplicacion de el tipo de credito (700) por la cantidad de credito otorgado del tipo C(700) */
+                        residuo700 = investment - (creditC * cr.Credit700)
+                        /* aqui valide la inversion por el tipo de credito para poder otorgar otos tipos de credito mas que solos de 700 */
+                        if residuo700 == 0 &amp;&amp; investment == creditC </span><span class="cov8" title="1">{
+                                return cr.Credit300, cr.Credit500, cr.Credit700, nil
+                        }</span>
+                        /* si el residuo es al menos divisible una vez entre el tipo de credito B(500), buscamos los posibles creditos entregables de 500 */
+                        <span class="cov8" title="1">if residuo700/creditB &gt; 0 </span><span class="cov8" title="1">{
+                                if first500 </span><span class="cov8" title="1">{
+                                        cr.Credit500 = residuo700 / creditB
+                                }</span>
+                                <span class="cov8" title="1">residuo500 = residuo700 - (creditB * cr.Credit500)
+                                if residuo500 == 0 </span><span class="cov8" title="1">{
+                                        return cr.Credit300, cr.Credit500, cr.Credit700, nil
+                                }</span>
+                                /* si el residuo de la divicion entre residuo500/300 es al menos 1 , quiere decir que hay mas creditos que otorgar de 300   */
+                                <span class="cov8" title="1">if residuo500/creditA &gt; 0 </span><span class="cov8" title="1">{
+                                        cr.Credit300 = residuo500 / creditA
+                                        residuo300 = residuo500 - (creditA * cr.Credit300)
+                                        if residuo300 &gt; 0 </span><span class="cov8" title="1">{
+                                                cr.Credit700 -= 1
+                                                first700 = false
+                                                first500 = true
+                                                continue</span>
+                                        }
+                                        <span class="cov8" title="1">return cr.Credit300, cr.Credit500, cr.Credit700, nil</span>
+                                } else<span class="cov8" title="1"> {
+                                        cr.Credit500 -= 1
+                                        first500 = false
+                                        continue</span>
+                                }
+                        } else<span class="cov8" title="1"> {
+                                cr.Credit700 -= 1
+                                first700 = false
+                                continue</span>
+                        }
+                }
+                /* si la inversion es menor que 700, empezamos a sacar los posibles creditos de tipo B y A (500 y 300) */
+                <span class="cov8" title="1">if first500 </span><span class="cov8" title="1">{
+                        cr.Credit500 = investment / creditB
+                }</span>
+                <span class="cov8" title="1">if investment &gt;= creditB &amp;&amp; cr.Credit700 == 0 &amp;&amp; cr.Credit500 &gt; 0 </span><span class="cov8" title="1">{
+                        fmt.Printf("%d,%d,%d \n", cr.Credit300, cr.Credit500, cr.Credit700)
+                        residuo500 = investment - (creditB * cr.Credit500)
+                        if residuo500 == 0 </span><span class="cov8" title="1">{
+                                return cr.Credit300, cr.Credit500, cr.Credit700, nil
+                        }</span>
+                        <span class="cov8" title="1">if residuo500/creditA &gt; 0 </span><span class="cov8" title="1">{
+                                cr.Credit300 = residuo500 / creditA
+                                residuo300 = residuo500 - (creditA * cr.Credit300)
+                                if residuo300 &gt; 0 </span><span class="cov8" title="1">{
+                                        cr.Credit500 -= 1
+                                        first500 = false
+                                        continue</span>
+                                }
+                                <span class="cov8" title="1">fmt.Println(cr.Credit300)
+                                fmt.Println(cr.Credit500)
+                                fmt.Println(cr.Credit700)
+                                return cr.Credit300, cr.Credit500, cr.Credit700, nil</span>
+                        } else<span class="cov8" title="1"> {
+                                cr.Credit500 -= 1
+                                first500 = false
+                                continue</span>
+                        }
+                }
+                /* si la inversion es menor que 500, sacamos los posibles creditos del tipo A */
+                <span class="cov8" title="1">cr.Credit300 = investment / creditA
+                if investment &gt;= creditA &amp;&amp; cr.Credit700 == 0 &amp;&amp; cr.Credit500 == 0 &amp;&amp; cr.Credit300 &gt; 0 </span><span class="cov8" title="1">{
+                        residuo300 = investment - (creditA * cr.Credit300)
+                        if residuo300 &gt; 0 </span><span class="cov8" title="1">{
+                                return cr.Credit300, cr.Credit500, cr.Credit700, errors.New("the investment could not be assigned in any credit")
+                        }</span>
+                        <span class="cov8" title="1">return cr.Credit300, cr.Credit500, cr.Credit700, nil</span>
+                }
+        }
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

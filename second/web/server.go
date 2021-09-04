@@ -9,8 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ServerRun() {
-	/* Uso la configuracion por default de gin */
+func SetupRouter() *gin.Engine {
 	router := gin.Default()
 	/* Utilizo el sistema de logs de gin con un formato diferente*/
 	router.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
@@ -36,7 +35,12 @@ func ServerRun() {
 
 		c.AbortWithStatus(http.StatusInternalServerError)
 	}))
-	credit := router.Group("/credit-asigment")
+	routesInvesment(router)
+	return router
+}
+
+func routesInvesment(routes *gin.Engine) {
+	credit := routes.Group("/credit-asigment")
 	{
 		credit.GET("/panic", func(c *gin.Context) {
 			// panic de prueba
@@ -45,5 +49,10 @@ func ServerRun() {
 
 		credit.POST("/", api.Assign)
 	}
+}
+
+func ServerRun() {
+	/* Uso la configuracion por default de gin */
+	router := SetupRouter()
 	router.Run()
 }
