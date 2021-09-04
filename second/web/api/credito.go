@@ -14,8 +14,8 @@ type CreditService struct {
 	credit credito.CreditType
 }
 
+/* Funcion para assignar una inversion desde el api rest */
 func Assign(c *gin.Context) {
-	// credito := credito.New()
 	service := CreditService{credit: *credito.New()}
 	var json data
 	if err := c.ShouldBindJSON(&json); err != nil {
@@ -23,10 +23,10 @@ func Assign(c *gin.Context) {
 		return
 	}
 	invest := int32(json.Investment)
+	/* aqui pongo un mensaje solo por practica para saber que esta pasando, no se me va bien solo negar peticiones :) */
 	_, _, _, err := service.credit.Assign(invest)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		// c.Writer.WriteHeader(400)
 		return
 	}
 	c.JSON(200, service.credit)
