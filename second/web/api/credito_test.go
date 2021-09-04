@@ -54,10 +54,11 @@ func TestApiCobranza(t *testing.T) {
 			Body:       `{"error":"the investment could not be assigned in any credit"}`,
 		},
 		{
-			Name:       "Igual que 500",
-			Input:      500,
-			StatusCode: 200,
-			Body:       `{"credit_type_300":0,"credit_type_500":1,"credit_type_700":0}`,
+			Name:        "Igual que 500",
+			Input:       500,
+			StatusCode:  200,
+			Body:        `{"credit_type_300":0,"credit_type_500":1,"credit_type_700":0}`,
+			ExpectedErr: "",
 		},
 		{
 			Name:       "Igual que 600",
