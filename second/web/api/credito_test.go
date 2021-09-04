@@ -16,10 +16,6 @@ type testdata struct {
 	Investment int32 `json:"investment"`
 }
 
-func routetest() {
-
-}
-
 func TestApiCobranza(t *testing.T) {
 
 	setTests := []struct {
